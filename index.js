@@ -1,6 +1,7 @@
-var request = require('request'),
-    cheerio = require('cheerio'),
-    _       = require('underscore');
+var request          = require('request'),
+    cheerio          = require('cheerio'),
+    moment           = require('moment'),
+    humanizeDuration = require('humanize-duration');
 
 require('dotenv').load();
 
@@ -13,11 +14,14 @@ request(process.env.ALAVETELI_URL + '/health_checks', function(error, response, 
     if(response.statusCode == 200) {
       message = 'Status: OK\n'
     } else {
-      message = 'Status: ERROR\n'
+      message = 'Status: WARN\n'
     }
 
-    _.each($('li b'), function(item) {
-      message += $(item).text() + '\n';
+    $('li b').each(function(i, item) {
+      console.log(item);
+      var text = $(item).text().split(' in the last day: ')
+      var timeAgo = humanizeDuration(moment.duration(text[1]).asMilliseconds());
+      message += text[0] + ': ' + timeAgo + ' ago\n';
     });
 
   } else {
