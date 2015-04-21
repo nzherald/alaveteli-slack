@@ -1,6 +1,7 @@
 var request          = require('request'),
     cheerio          = require('cheerio'),
     moment           = require('moment'),
+    momentTimezone   = require('moment-timezone'),
     humanizeDuration = require('humanize-duration');
 
 require('dotenv').load();
@@ -18,9 +19,8 @@ request(process.env.ALAVETELI_URL + '/health_checks', function(error, response, 
     }
 
     $('li b').each(function(i, item) {
-      console.log(item);
       var text = $(item).text().split(' in the last day: ')
-      var timeAgo = humanizeDuration(moment.duration(text[1]).asMilliseconds());
+      var timeAgo = humanizeDuration(moment.duration(moment(text[1]).tz('utc')).asMilliseconds());
       message += text[0] + ': ' + timeAgo + ' ago\n';
     });
 
