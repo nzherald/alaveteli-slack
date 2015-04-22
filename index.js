@@ -26,7 +26,7 @@ request(process.env.ALAVETELI_URL + '/health_checks', function(error, response, 
     });
 
   } else {
-    message = '[URGENT]\nError requesting ' + process.env.ALAVETELI_URL + '/health_checks';
+    message = '*[URGENT]\nError requesting ' + process.env.ALAVETELI_URL + '/health_checks*';
   }
 
   var payload = JSON.stringify({
