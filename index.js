@@ -20,8 +20,8 @@ request(process.env.ALAVETELI_URL + '/health_checks', function(error, response, 
     }
 
     $('li b').each(function(i, item) {
-      var text = $(item).text().split(' in the last day: ')
-      var timeAgo = humanizeDuration(moment.duration(moment() - moment(text[1])));
+      var text = $(item).text().split(/ (in the last day:|over a day ago:) /)
+      var timeAgo = humanizeDuration(moment.duration(moment() - moment(text[2])));
       message += '*' + text[0] + '*: ' + timeAgo + ' ago\n';
     });
 
