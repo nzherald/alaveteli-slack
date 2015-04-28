@@ -1,44 +1,19 @@
-var request          = require('request'),
-    http             = require('http'),
-    cheerio          = require('cheerio'),
-    moment           = require('moment'),
-    momentTimezone   = require('moment-timezone'),
-    humanizeDuration = require('humanize-duration');
-
+var notifier = require('./lib/alaveteli-slack');
 require('dotenv').load();
 
-request(process.env.ALAVETELI_URL + '/health_checks', function(error, response, body) {
-  var message;
+// Notify initially for the first time
+notifier.notify();
 
-  if(!error) {
-    var $ = cheerio.load(body);
+function tick()
+{
+    //get the mins of the current time
+    var mins = new Date().getMinutes();
+    if(mins == "00"){
+      console.log('Sending notification');
+      notifier.notify();
+     }
+}
 
-    if(response.statusCode == 200) {
-      message = '*Status*: OK\n'
-    } else {
-      message = '*Status*: _WARN_\n'
-    }
+console.log('Notifying on the hour...');
 
-    $('li b').each(function(i, item) {
-      var text = $(item).text().split(/ (in the last day:|over a day ago:) /)
-      var timeAgo = humanizeDuration(moment.duration(moment() - moment(text[2])));
-      message += '*' + text[0] + '*: ' + timeAgo + ' ago\n';
-    });
-
-  } else {
-    message = '*URGENT*\n*Error requesting ' + process.env.ALAVETELI_URL + '/health_checks*';
-  }
-
-  var payload = JSON.stringify({
-    channel: '#fyi-org-nz-bots',
-    username: 'fyi',
-    text: message
-  });
-
-  console.log(payload);
-
-  request.post({ url: process.env.WEBHOOK_URL, body: payload }, function(err, response, body) {
-    console.log(body);
-  });
-
-});
+setInterval(tick, 1000);
