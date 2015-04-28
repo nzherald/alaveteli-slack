@@ -1,5 +1,4 @@
 var notifier = require('./lib/alaveteli-slack');
-require('dotenv').load();
 
 // Notify initially for the first time
 notifier.notify();
