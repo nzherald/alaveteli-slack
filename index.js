@@ -15,4 +15,4 @@ function tick()
 
 console.log('Notifying on the hour...');
 
-setInterval(tick, 40000);
+setInterval(tick, 60000);
