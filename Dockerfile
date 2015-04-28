@@ -4,7 +4,7 @@ RUN mkdir -p /opt/alaveteli-slack
 
 WORKDIR /opt/alaveteli-slack
 
-ADD .
+ADD . /opt/alaveteli-slack
 
 RUN npm install
 
